@@ -4,6 +4,9 @@
 <div class="jumbotron">
   <h1>main app</h1>
 
+  {% load static from staticfiles %}
+<img src="{% static "main_app/image.jpg" %}" alt="Hi!" />
+
 </div>
 
 {% endblock %}
