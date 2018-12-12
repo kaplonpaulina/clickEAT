@@ -21,7 +21,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          {% if user.is_aunthenticated %}
+          {% if user.is_authenticated %}
           <li> <a class="nav-item nav-link active" href="{% url 'accounts:logout' %}">log out</a> </li>
           <a class="nav-item nav-link" href="#">edit</a>
         {% else %}
