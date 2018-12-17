@@ -14,7 +14,7 @@ def list_restaurants(request):
     template = 'search.html'
     queryset = Restaurant.objects.all()
 
-    paginator = Paginator(queryset, 1)
+    paginator = Paginator(queryset, 10)
     page = request.GET.get('page')
     try:
         items = paginator.page(page)
@@ -65,7 +65,7 @@ def search(request):
     else:
         queryset = Restaurant.objects.all()
 
-    paginator = Paginator(queryset, 1)
+    paginator = Paginator(queryset, 10)
     page = request.GET.get('page')
     try:
         items = paginator.page(page)
