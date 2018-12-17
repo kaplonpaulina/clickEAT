@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
@@ -8,3 +9,6 @@ class SignUp(CreateView):
     form_class = forms.UserCreateForm
     success_url = reverse_lazy("login")
     template_name = "accounts/signup.html"
+
+class Profile(TemplateView):
+    template_name = 'profile.html'

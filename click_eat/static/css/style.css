@@ -5,6 +5,12 @@ body {
     font-family: 'Montserrat', sans-serif !important;
     font-size: 1.3em !important;
 }
+
+.text-style-header {
+    background-color: #fba03e;
+    color: white;
+}
+
 .main-navbar {
     background-color: #fba03e;
     height: 8vh;
@@ -133,4 +139,45 @@ body {
     font-weight: bolder;
     height: 50px;
     line-height: 50px;
+}
+
+
+/* /* @media  */
+
+@media only screen and (max-width: 1042px) {
+
+    .main-content {
+        height: 100%;
+        background-attachment: fixed;
+    }
+    .text-box {
+        width: 70%;
+    }
+    .container {
+        padding: 0;
+    }
+    .col-lg:nth-of-type(2) {
+        border-style: solid;
+        border-width: 5px 0;
+        border-color: #fba03e;
+        filter: none;
+    }
+    
+    .middle-col {
+        filter:grayscale(0);
+    }
+
+    .col-md-12 {
+        padding: 0 !important;
+ 
+    }
+
+    .col-lg {
+        padding: 0 !important;
+    }
+    
+    .col-lg .container-text {
+        right: 0;
+        left: 0;
+    }
 }
