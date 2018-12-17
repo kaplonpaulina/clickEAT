@@ -12,7 +12,7 @@
   <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'home' %}">
+      <a class="navbar-brand" href="{% url 'restaurants:list' %}">
     <img src="{% static "image.png" %}" width="30" height="30" class="d-inline-block align-top" alt="">
     Click Eat
   </a>
@@ -23,6 +23,8 @@
         <div class="navbar-nav">
           {% if user.is_authenticated %}
           <li> <a class="nav-item nav-link active" href="{% url 'accounts:logout' %}">log out</a> </li>
+          <li> <a class="nav-item nav-link active" href="{% url 'accounts:profile' %}">profile</a> </li>
+          <li> <a class="nav-item nav-link active" href="{% url 'restaurants:new_restaurant' %}">add new place</a> </li>
           <a class="nav-item nav-link" href="#">edit</a>
         {% else %}
         <li> <a class="nav-item nav-link" href="{% url 'accounts:login' %}">log in</a> </li>
@@ -33,12 +35,7 @@
       </div>
     </nav>
 
-    <nav class="navbar navbar-light bg-light">
-      <form class="form-inline">
-        <input class="form-control mr-sm-2" type="search" placeholder="jaka restauracja?" aria-label="Search" name="search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-    </nav>
+
 
       <!--img src="{% static "image.png" %}" alt="My image"-->
 
