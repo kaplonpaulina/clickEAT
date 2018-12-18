@@ -14,7 +14,7 @@ def list_restaurants(request):
     template = 'search.html'
     queryset = Restaurant.objects.all()
 
-    paginator = Paginator(queryset, 1)
+    paginator = Paginator(queryset, 10)
     page = request.GET.get('page')
     try:
         items = paginator.page(page)
@@ -25,8 +25,8 @@ def list_restaurants(request):
 
     index = items.number - 1
     max_index = len(paginator.page_range)
-    start_index = index - 5 if index >= 5 else 0
-    end_index = index + 5 if index <= max_index else max_index
+    start_index = index - 2 if index >= 2 else 0
+    end_index = index + 2 if index <= max_index else max_index
     page_range = paginator.page_range[start_index:end_index]
 
 
@@ -65,7 +65,7 @@ def search(request):
     else:
         queryset = Restaurant.objects.all()
 
-    paginator = Paginator(queryset, 1)
+    paginator = Paginator(queryset, 10)
     page = request.GET.get('page')
     try:
         items = paginator.page(page)
@@ -76,8 +76,8 @@ def search(request):
 
     index = items.number - 1
     max_index = len(paginator.page_range)
-    start_index = index - 5 if index >= 5 else 0
-    end_index = index + 5 if index <= max_index else max_index
+    start_index = index - 2 if index >= 2 else 0
+    end_index = index + 2 if index <= max_index else max_index
     page_range = paginator.page_range[start_index:end_index]
 
 
