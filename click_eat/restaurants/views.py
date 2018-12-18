@@ -7,7 +7,7 @@ from django.contrib import messages
 
 
 from .models import Restaurant, Category
-from .forms import RestaurantForm
+from .forms import RestaurantForm,OpeningHoursForm
 
 # Create your views here.
 def list_restaurants(request):
@@ -36,19 +36,19 @@ def list_restaurants(request):
     }
     return render(request, template, context)
 
-def restaurant_detail(request, name):
+def restaurant_detail(request, slug):
     template = 'detail.html'
 
-    restaurant = get_object_or_404(Restaurant, name=name)
+    restaurant = get_object_or_404(Restaurant, slug=slug)
     context = {
         'restaurant':restaurant,
     }
     return render(request,template,context)
 
-def category_detail(request, name):
+def category_detail(request, slug):
     template = 'category_detail.html'
 
-    category = get_object_or_404(Category, name=name)
+    category = get_object_or_404(Category, slug=slug)
     restaurant = Restaurant.objects.filter(category=category)
     context = {
         'resturant_by_category':restaurant,'category':category,
@@ -100,6 +100,25 @@ def new_Restaurant(request):
     except Exception as e:
         form = RestaurantForm()
         messages.warning(request, 'restaurant was not added. Error {}'.format(e))
+
+    context = {
+        'form':form
+    }
+
+    return render(request,template,context)
+
+def Opening(request):
+    template = 'new.html'
+    form = OpeningHoursForm(request.POST or None)
+
+    try:
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'information updated')
+
+    except Exception as e:
+        form = OpeningHoursForm()
+        messages.warning(request, 'something wet wrong. Error {}'.format(e))
 
     context = {
         'form':form

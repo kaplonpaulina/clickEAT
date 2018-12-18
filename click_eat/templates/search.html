@@ -11,8 +11,15 @@
 
 {% for obj in items%}
 
-<h1><a href="{% url 'restaurants:detail' name=obj.name %}">{{obj.name}}</a></h1>
-<p><a href="{% url 'restaurants:category_detail' name=obj.category.name %}">{{obj.category}}</a></p>
+<h1><a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a></h1>
+<p><a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a></p>
+
+{{obj.opening_hours}}
+
+{{obj.address}}
+
+{{obj.price}}
+
 {% endfor %}
 {% include 'pagination.html' %}
 

@@ -3,7 +3,16 @@
 
 {% block content%}
   <h1>{{restaurant.name}}</h1>
-  <p><a href="{% url 'restaurants:category_detail' name=restaurant.category.name %}">{{restaurant.category}}</a></p>
+
+  {{restaurant.opening_hours}}
+
+  {{restaurant.address}}
+
+  {{restaurant.price}}
+
+
+
+  <p><a href="{% url 'restaurants:category_detail' slug=restaurant.category.slug %}">{{restaurant.category}}</a></p>
 
 
   {% if user.is_authenticated %}
