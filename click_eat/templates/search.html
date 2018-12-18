@@ -24,7 +24,15 @@
 
 {{obj.address}}
 
-{{obj.price}}
+{% if obj.price %}
+  {% if obj.price == 1%}
+    tanio
+  {% elif obj.price == 2 %}
+    przystępnie
+  {% else %}
+    drogo
+  {% endif %}
+{% endif %}
 
 {% endfor %}
 {% include 'pagination.html' %}
