@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib import messages
+from django.utils import timezone
 
 
 
@@ -29,10 +30,12 @@ def list_restaurants(request):
     end_index = index + 2 if index <= max_index else max_index
     page_range = paginator.page_range[start_index:end_index]
 
+    now = timezone.now()
 
     context = {
         "items":items,
         "page_range":page_range,
+        "now":now
     }
     return render(request, template, context)
 
@@ -47,7 +50,6 @@ def restaurant_detail(request, slug):
 
 def category_detail(request, slug):
     template = 'category_detail.html'
-
     category = get_object_or_404(Category, slug=slug)
     restaurant = Restaurant.objects.filter(category=category)
     context = {

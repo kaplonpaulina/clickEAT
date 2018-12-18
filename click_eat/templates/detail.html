@@ -4,11 +4,25 @@
 {% block content%}
   <h1>{{restaurant.name}}</h1>
 
+  {% if restaurant.opening_hours and restaurant.closing_hours %}
+
   {{restaurant.opening_hours}}
+  {{restaurant.closing_hours}}
+  {% endif %}
 
+{% if restaurant.address %}
   {{restaurant.address}}
+{% endif %}
+{% if restaurant.price %}
+  {% if restaurant.price == 1%}
+    tanio
+  {% elif restaurant.price == 2 %}
+    przystępnie
+  {% else %}
+    drogo
+  {% endif %}
 
-  {{restaurant.price}}
+{% endif %}
 
 
 

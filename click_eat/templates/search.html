@@ -14,7 +14,13 @@
 <h1><a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a></h1>
 <p><a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a></p>
 
-{{obj.opening_hours}}
+{% if obj.opening_hours and obj.closing_hours %}
+  {% if obj.opening_hours <= now.time and obj.closing_hours >= now.time%}
+    otwarte teraz
+  {% else %}
+    zaknięte teraz
+  {%endif%}
+{% endif %}
 
 {{obj.address}}
 
