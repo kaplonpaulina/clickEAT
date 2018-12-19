@@ -31,10 +31,18 @@ class RestaurantsTestCase(LiveServerTestCase):
 
         restaurants= selenium.find_element_by_id('id_name')
         category_dropdown_list = Select(selenium.find_element_by_id('id_category'))
+        opening_hours= selenium.find_element_by_id('id_opening_hours')
+        closing_hours= selenium.find_element_by_id('id_closing_hours')
+        price_dropdown_list = Select(selenium.find_element_by_id('id_price'))
+        address= selenium.find_element_by_id('id_address')
         save = selenium.find_element_by_name('button')
 
-        restaurants.send_keys('lumo')
-        category_dropdown_list.select_by_visible_text('@ciasta')
+        restaurants.send_keys('Ramen People')
+        category_dropdown_list.select_by_visible_text('@Ramen')
+        opening_hours.send_keys('12:00')
+        closing_hours.send_keys('21:00')
+        price_dropdown_list.select_by_visible_text('przystępnie')
+        address.send_keys('Czysta 8')
 
         save.click()
 
@@ -42,19 +50,19 @@ class RestaurantsTestCase(LiveServerTestCase):
         selenium = self.selenium
         selenium.get('http://127.0.0.1:8000/restaurants')
 
-        restaurant = selenium.find_element_by_link_text('Szwagra')
+        restaurant = selenium.find_element_by_link_text('Farina')
         restaurant.click()
 
-        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/restaurants/Szwagra/')
+        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/restaurants/farina/')
 
     def test_choose_category_from_list(self):
         selenium = self.selenium
         selenium.get('http://127.0.0.1:8000/restaurants')
 
-        restaurant = selenium.find_element_by_link_text('@kebab')
+        restaurant = selenium.find_element_by_link_text('@Galicyjska')
         restaurant.click()
 
-        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/restaurants/category_detail/kebab/')
+        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/restaurants/category_detail/galicyjska/')
 
     def test_search_restaurant(self):
         selenium = self.selenium
@@ -63,11 +71,15 @@ class RestaurantsTestCase(LiveServerTestCase):
         restaurants= selenium.find_element_by_name('q')
         search = selenium.find_element_by_xpath("//button[@type='submit']")
 
-        restaurants.send_keys('szwagra')
-
+        restaurants.send_keys('Restauracja Boscaiola')
         search.click()
 
-        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/restaurants/results/?q=szwagra')
+        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/restaurants/results/?q=Restauracja+Boscaiola')
+
+        restaurant=selenium.find_element_by_link_text('Restauracja Boscaiola')
+        restaurant.click()
+
+        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/restaurants/restauracja-boscaiola/')
 
     def test_go_to_home(self):
         selenium = self.selenium

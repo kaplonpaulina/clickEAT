@@ -19,8 +19,8 @@ class BasicTestCase(TestCase):
         password = selenium.find_element_by_id('id_password')
         submit = selenium.find_element_by_xpath("//input[@value='Login']")
 
-        username.send_keys('aa')
-        password.send_keys('Robaczek12')
+        username.send_keys('testuser')
+        password.send_keys('Lemur123')
 
         submit.click()
 
