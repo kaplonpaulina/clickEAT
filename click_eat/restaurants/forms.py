@@ -6,7 +6,7 @@ class RestaurantForm(forms.ModelForm):
 
     class Meta:
         model = Restaurant
-        fields = ['name','category','opening_hours','price','address']
+        fields = ['name','category','opening_hours','closing_hours','price','address']
 
 class OpeningHoursForm(forms.ModelForm):
     class Meta:

@@ -2,6 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from accounts.models import User
 from enum import Enum
+from django.utils import timezone
 
 # Create your models here.
 
@@ -42,12 +43,13 @@ class Category(models.Model):
 class Restaurant(models.Model):
     name = models.CharField(max_length = 255)
     address = models.CharField(max_length = 255,blank=True, null=True,default=None )
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(editable=False)
+    updated = models.DateTimeField()
     author = models.CharField(max_length = 255)
     #weekday = models.IntegerField(_('Weekday'), choices=WEEKDAYS)
     price = models.IntegerField(choices=PriceChoice,null=True,blank=True)
     opening_hours = models.TimeField(blank=True, null=True)
+    closing_hours = models.TimeField(blank=True, null=True)
 
     #hours = models.ForeignKey(Hours, on_delete = models.CASCADE, blank=True, null=True)
     #author = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
@@ -57,6 +59,9 @@ class Restaurant(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        if not self.id:
+            self.created = timezone.now()
+        self.updated = timezone.now()
         super(Restaurant, self).save(*args,**kwargs)
 
 
