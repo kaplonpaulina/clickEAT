@@ -4,7 +4,10 @@ from selenium.webdriver.common.keys import Keys
 
 class AccountTestCase(LiveServerTestCase):
     def setUp(self):
-        self.selenium = webdriver.Firefox()
+        #self.selenium = webdriver.Firefox()
+        self.selenium = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+        self.selenium.set_window_size(1920, 1080)
+        size = self.selenium.get_window_size()
         super(AccountTestCase, self).setUp()
 
     def tearDown(self):

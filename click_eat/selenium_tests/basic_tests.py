@@ -1,9 +1,15 @@
 from django.test import TestCase
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.chrome.options import Options
 
 class BasicTestCase(TestCase):
     def setUp(self):
-        self.selenium = webdriver.Firefox()
+        #self.selenium = webdriver.Firefox()
+        self.selenium = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+        self.selenium.set_window_size(1920, 1080)
+        size = self.selenium.get_window_size()
         super(BasicTestCase, self).setUp()
 
     def tearDown(self):
@@ -27,7 +33,6 @@ class BasicTestCase(TestCase):
     def test_page_name(self):
         selenium = self.selenium
         selenium.get('http://127.0.0.1:8000/')
-
         self.assertIn('ClickEat', selenium.title)
 
 
@@ -35,7 +40,7 @@ class BasicTestCase(TestCase):
         selenium = self.selenium
         selenium.get('http://127.0.0.1:8000/')
 
-        login = selenium.find_element_by_link_text('Log in')
+        login = selenium.find_element_by_xpath("//a[@href='/accounts/login/']")
         login.click()
 
         self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/accounts/login/')
