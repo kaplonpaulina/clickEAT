@@ -14,9 +14,9 @@
   {% for obj in items%}
 
   <li>
-    <a href="{% url 'restaurants:detail' name=obj.name %}">{{obj.name}}</a>
+    <a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a>
     <span> - </span>
-    <a href="{% url 'restaurants:category_detail' name=obj.category.name %}">{{obj.category}}</a>
+    <a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a>
   </li>
   {% endfor %}
 </ol>
