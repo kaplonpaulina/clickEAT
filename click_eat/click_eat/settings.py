@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'accounts',
     'restaurants',
+    'django.contrib.admindocs'
 ]
 
 MIDDLEWARE = [

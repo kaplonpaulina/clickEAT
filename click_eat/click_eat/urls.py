@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'^accounts/',include('accounts.urls',namespace='accounts')),
     url(r'^accounts/',include('django.contrib.auth.urls')),
     url(r'^restaurants/',include('restaurants.urls',namespace='restaurants')),
-
+    url(r'^doc/',include('django.contrib.admindocs.urls'))
 ]
