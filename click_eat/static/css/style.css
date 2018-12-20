@@ -35,6 +35,7 @@ body {
 }
 
 
+
 .main-content {
     background-image: url('../images/background.jpg');
     background-size: cover;
@@ -141,10 +142,63 @@ body {
     line-height: 50px;
 }
 
+.restaurantList li {
+    background-color: #fba03e;
+    text-align: center;
+    margin: 0 30px 9px;
+    box-shadow: 0 3px 2px rgba(0, 0, 0, 0.12);
+}
+
+.restaurantList li span {
+    color: white;
+}
+
+.restaurantList li a {
+    color: white !important;
+}
+
+.restaurantList li a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.button-edit {
+    background: #fba03e;
+    color: white;
+    text-align: center;
+    width: 70px;
+    margin: auto;
+}
+.button-edit:hover {
+    text-decoration: none;
+    color: white; 
+}
+
+.addRest {
+    margin-top: 25px;
+    
+}
+
+.detailTitle {
+    width: 300px;
+    color: white;
+    background: #fba03e;
+    text-align: center;
+    margin: 25px auto;
+
+}
 
 /* /* @media  */
 
 @media only screen and (max-width: 1042px) {
+    .navbar-collapse {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0px !important;
+        width: 100% !important;
+        z-index: 1 !important;
+        background: #fba03e;
+    }
 
     .main-content {
         height: 100%;

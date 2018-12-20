@@ -2,10 +2,12 @@
 
 
 {% block content%}
-  <h1>{{category.name}}</h1>
+<h1 class="detailTitle">{{category.name}}</h1>
 
-  {% for item in resturant_by_category%}
-  <h1><a href="{% url 'restaurants:detail' name=item.name %}">{{item.name}}</a></h1>
-  {% endfor %}
+{% for item in resturant_by_category%}
+<ol class="restaurantList">
+  <li><a href="{% url 'restaurants:detail' name=item.name %}">{{item.name}}</a></li>
+</ol>
+{% endfor %}
 
 {% endblock %}

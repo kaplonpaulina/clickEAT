@@ -4,16 +4,23 @@
 
 <nav class="navbar navbar-light bg-light">
   <form class="form-inline" method="GET" action="{% url 'restaurants:search' %}">
-    <input class="form-control mr-sm-2" type="search" value="{{request.GET.get}}" placeholder="jaka restauracja?" aria-label="Search" name="q">
+    <input class="form-control mr-sm-2" type="search" value="{{request.GET.get}}" placeholder="jaka restauracja?"
+      aria-label="Search" name="q">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
   </form>
 </nav>
 
-{% for obj in items%}
+<ol class="restaurantList">
+  {% for obj in items%}
 
-<h1><a href="{% url 'restaurants:detail' name=obj.name %}">{{obj.name}}</a></h1>
-<p><a href="{% url 'restaurants:category_detail' name=obj.category.name %}">{{obj.category}}</a></p>
-{% endfor %}
+  <li>
+    <a href="{% url 'restaurants:detail' name=obj.name %}">{{obj.name}}</a>
+    <span> - </span>
+    <a href="{% url 'restaurants:category_detail' name=obj.category.name %}">{{obj.category}}</a>
+  </li>
+  {% endfor %}
+</ol>
+
 {% include 'pagination.html' %}
 
 {% endblock %}
