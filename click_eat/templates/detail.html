@@ -5,13 +5,37 @@
 <div class="container">
     <h1 class="detailTitle">{{restaurant.name}}</h1>
     <ol class="restaurantList">
-      <li><a href="{% url 'restaurants:category_detail' slug=restaurant.category.slug %}">{{restaurant.category}}</a></li>
+      <li><a href="{% url 'restaurants:category_detail' slug=restaurant.category.slug %}">{{restaurant.category}}</a>
+      {% if restaurant.opening_hours and restaurant.closing_hours %}
+
+    <a>{{restaurant.opening_hours}}</a>
+    <span> - </span>
+    <a>{{restaurant.closing_hours}}</a>
+    {% endif %}
+
+  {% if restaurant.address %}
+  <br>
+    <a>{{restaurant.address}}</a>
+  {% endif %}
+  {% if restaurant.price %}
+  <span> - </span>
+    {% if restaurant.price == 1%}
+      <a>tanio</a>
+    {% elif restaurant.price == 2 %}
+      <a>przystępnie</a>
+    {% else %}
+      <a>drogo</a>
+    {% endif %}
+
+  {% endif %}
+
+  </li>
+
     </ol>
-    
-    
-    
+
+
     {% if user.is_authenticated %}
-    
+
     <a class="nav-item nav-link active button-edit" href="#">edit</a>
     {% endif %}
 </div>

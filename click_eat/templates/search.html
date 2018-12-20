@@ -15,36 +15,54 @@
                 <button class="btn btn-default" type="submit">Search</button>
               </form>
             </nav>
-       
-        
-        
+
+
+
           <ol class="restaurantList">
             {% for obj in items%}
-          
+
             <li>
               <a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a>
               <br>
               <a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a>
+
+
+              {% if obj.address%}
               <span> - </span>
-              <a >{{obj.address}}</a>
+                <a>{{obj.address}}</a>
+              {% endif %}
+
+
+              {% if obj.price %}
               <span> - </span>
-              <a >{{obj.price}}</a>
+                {% if obj.price == 1%}
+                <a >  tanio</a>
+                {% elif obj.price == 2 %}
+                  <a >przystępnie</a>
+                {% else %}
+                  <a >drogo</a>
+                {% endif %}
+              {% endif %}
               <br>
-              <a >{{obj.opening_hours}}</a>
-              <span> - </span>
-              <a >{{obj.closing_hours}}</a>
+              {% if obj.opening_hours and obj.closing_hours %}
+              {% if obj.opening_hours <= now.time and obj.closing_hours >= now.time%}
+              <a>otwarte teraz</a>
+              {% else %}
+              <a>zamknięte teraz</a>
+              {%endif%}
+              {% endif %}
             </li>
             {% endfor %}
           </ol>
-    
+
             {% include 'pagination.html' %}
 
- 
+
       </div>
-      
+
       </div>
-      
+
   </div>
- 
+
 
 {% endblock %}
