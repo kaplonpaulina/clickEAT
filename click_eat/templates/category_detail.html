@@ -1,13 +1,17 @@
 {% extends "base.html" %}
+{% block content %}
+{% load bootstrap3 %}
 
+<div class="container">
+    <h1 class="detailTitle">{{category.name}}</h1>
 
-{% block content%}
-<h1 class="detailTitle">{{category.name}}</h1>
+    {% for item in resturant_by_category%}
+    <ol class="restaurantList">
+      <li><a href="{% url 'restaurants:detail' slug=item.slug %}">{{item.name}}</a></li>
+    </ol>
 
-{% for item in resturant_by_category%}
-<ol class="restaurantList">
-  <li><a href="{% url 'restaurants:detail' name=item.name %}">{{item.name}}</a></li>
-</ol>
-{% endfor %}
+  {% endfor %}
+</div>
+
 
 {% endblock %}

@@ -1,26 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="container">
 
-<nav class="navbar navbar-light bg-light">
-  <form class="form-inline" method="GET" action="{% url 'restaurants:search' %}">
-    <input class="form-control mr-sm-2" type="search" value="{{request.GET.get}}" placeholder="jaka restauracja?"
-      aria-label="Search" name="q">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-  </form>
-</nav>
+    <h1 class="detailTitle">Restauracje w pobliżu</h1>
 
-<ol class="restaurantList">
-  {% for obj in items%}
+  <div class="row">
+    <div class="col">
 
-  <li>
-    <a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a>
-    <span> - </span>
-    <a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a>
-  </li>
-  {% endfor %}
-</ol>
+            <nav class="navbar navbar-light bg-light">
+              <form class="form-inline" method="GET" action="{% url 'restaurants:search' %}">
+                <input class="form-control mr-sm-2" type="search" value="{{request.GET.get}}" placeholder="wyszukaj po nazwie"
+                  aria-label="Search" name="q">
+                <button class="btn btn-default" type="submit">Search</button>
+              </form>
+            </nav>
+       
+        
+        
+          <ol class="restaurantList">
+            {% for obj in items%}
+          
+            <li>
+              <a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a>
+              <br>
+              <a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a>
+              <span> - </span>
+              <a >{{obj.address}}</a>
+              <span> - </span>
+              <a >{{obj.price}}</a>
+              <br>
+              <a >{{obj.opening_hours}}</a>
+              <span> - </span>
+              <a >{{obj.closing_hours}}</a>
+            </li>
+            {% endfor %}
+          </ol>
+    
+            {% include 'pagination.html' %}
 
-{% include 'pagination.html' %}
+ 
+      </div>
+      
+      </div>
+      
+  </div>
+ 
 
 {% endblock %}

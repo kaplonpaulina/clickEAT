@@ -1,25 +1,29 @@
 {% extends "base.html" %}
-
+{% load bootstrap3 %}
 
 {% block content%}
 
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %} role="alert">
-  <button type="button" class="" name="button" data-dismiss="alert" onclick= {% if message.tags == 'success' %}
-    "location.href='{% url 'restaurants:list' %}'" {%else%}"location.href='{% url ' restaurants:new_restaurant' %}'"
-    {%endif%}> close </button>
-  <strong>{{message}}</strong>
+<div class="container">
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %} role="alert">
+      <button type="button" class="" name="button" data-dismiss="alert" onclick= {% if message.tags == 'success' %}
+        "location.href='{% url 'restaurants:list' %}'" {%else%}"location.href='{% url ' restaurants:new_restaurant' %}'"
+        {%endif%}> close </button>
+      <strong>{{message}}</strong>
+    </div>
+    {% endfor %}
+    {% else %}
+    <form  method="post">
+    
+      {% csrf_token %}
+      
+      {% bootstrap_form form %}
+      <button type="submit" name="button" class="btn btn-default">Save</button>
+    </form>
+    {% endif %}
 </div>
-{% endfor %}
-{% else %}
-<form class="" method="post">
 
-  {% csrf_token %}
 
-  {{form.as_p}}
-  <button type="submit" name="button">Save</button>
-</form>
-{% endif %}
 
 {% endblock %}

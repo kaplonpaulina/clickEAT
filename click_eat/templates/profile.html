@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="detailTitle">profile</h1>
+{% load bootstrap3 %}
 
-<ol class="restaurantList">
-    <li><a>{{user.username}}</a></li>
-</ol>
+<div class="container">
+        <h1 class="detailTitle">profile</h1>
+
+        <ol class="restaurantList">
+            <li><a>{{user.username}}</a></li>
+        </ol>
+</div>
+
 
 
 {% endblock %}
