@@ -12,6 +12,27 @@ from .forms import RestaurantForm,OpeningHoursForm
 
 # Create your views here.
 def list_restaurants(request):
+
+    """
+    Display a list of all of :model:`restaurants.Restaurant` using pagination from django.core.paginator.Paginator.
+
+    **Context**
+
+    ``items``
+        An list of :model:`restaurants.Restaurant`.
+    ``page_range``
+        A list of pages which should be displayed.
+    ``now``
+        current time obtained from timezone.now() used to calculate if the :model:`restaurants.Restaurant` is currently open for buisness.
+
+
+
+    **Template:**
+
+    :template:`search.html`
+    """
+
+
     template = 'search.html'
     queryset = Restaurant.objects.all()
 
@@ -40,6 +61,20 @@ def list_restaurants(request):
     return render(request, template, context)
 
 def restaurant_detail(request, slug):
+
+    """
+    Display a detailed page of :model:`restaurants.Restaurant` by slug
+
+    **Context**
+
+    ``restaurant``
+        A unique instance of :model:`restaurants.Restaurant`.
+
+    **Template:**
+
+    :template:`detail.html`
+    """
+
     template = 'detail.html'
 
     restaurant = get_object_or_404(Restaurant, slug=slug)
@@ -49,6 +84,7 @@ def restaurant_detail(request, slug):
     return render(request,template,context)
 
 def category_detail(request, slug):
+
     template = 'category_detail.html'
     category = get_object_or_404(Category, slug=slug)
     restaurant = Restaurant.objects.filter(category=category)
@@ -59,6 +95,25 @@ def category_detail(request, slug):
 
 
 def search(request):
+
+
+    """
+        Display a list of all of :model:`restaurants.Restaurant` using pagination from django.core.paginator.Paginator using filtration by name
+
+        **Context**
+
+        ``items``
+            An list of :model:`restaurants.Restaurant`.
+        ``page_range``
+            A list of pages which should be displayed.
+        ``query``
+            A query from GET with name q.
+
+        **Template:**
+
+        :template:`search.html`
+    """
+
     template = 'search.html'
     query = request.GET.get('q')
 
@@ -91,6 +146,18 @@ def search(request):
     return render(request, template, context)
 
 def new_Restaurant(request):
+    """
+        Handle of the RestaurantForm
+
+        **Context**
+
+        ``form``
+            A form of the new added :model:`restaurants:Restaurant`.
+        **Template:**
+
+        :template:`new_restaurant.html`
+    """
+
     template = 'new_restaurant.html'
     form = RestaurantForm(request.POST or None)
 

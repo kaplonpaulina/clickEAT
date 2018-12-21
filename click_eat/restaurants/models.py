@@ -30,6 +30,12 @@ Weekdays = [
 
 
 class Category(models.Model):
+    """
+
+    Stores a unique category of :model:`restaurants.Restaurant`      
+
+    """
+
     name = models.CharField(max_length = 255)
     slug = models.SlugField(max_length=200, unique=True)
 
@@ -41,6 +47,13 @@ class Category(models.Model):
         return "@{}".format(self.name)
 
 class Restaurant(models.Model):
+    """
+
+    Stores a unique named restaurant
+
+    """
+
+
     name = models.CharField(max_length = 255)
     address = models.CharField(max_length = 255,blank=True, null=True,default=None )
     created = models.DateTimeField(editable=False)
