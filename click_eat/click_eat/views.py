@@ -2,11 +2,17 @@ from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.shortcuts import render
 
-class TestPage(TemplateView):
-    template_name = 'test.html'
+def home(request):
+    """
+        A hook to the home page
 
-class ThanksPage(TemplateView):
-    template_name = 'thanks.html'
+        **Context**
 
-class HomePage(TemplateView):
-    template_name = 'index.html'
+        **Template:**
+
+        :template:`index.html`
+    """
+
+
+    template = 'index.html'
+    return render(request,template)

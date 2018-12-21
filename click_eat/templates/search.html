@@ -1,19 +1,68 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="container">
 
-<nav class="navbar navbar-light bg-light">
-  <form class="form-inline" method="GET" action="{% url 'restaurants:search' %}">
-    <input class="form-control mr-sm-2" type="search" value="{{request.GET.get}}" placeholder="jaka restauracja?" aria-label="Search" name="q">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-  </form>
-</nav>
+    <h1 class="detailTitle">Restauracje w pobliżu</h1>
 
-{% for obj in items%}
+  <div class="row">
+    <div class="col">
 
-<h1><a href="{% url 'restaurants:detail' name=obj.name %}">{{obj.name}}</a></h1>
-<p><a href="{% url 'restaurants:category_detail' name=obj.category.name %}">{{obj.category}}</a></p>
-{% endfor %}
-{% include 'pagination.html' %}
+            <nav class="navbar navbar-light bg-light">
+              <form class="form-inline" method="GET" action="{% url 'restaurants:search' %}">
+                <input class="form-control mr-sm-2" type="search" value="{{request.GET.get}}" placeholder="wyszukaj po nazwie"
+                  aria-label="Search" name="q">
+                <button class="btn btn-default" type="submit">Search</button>
+              </form>
+            </nav>
+
+
+
+          <ol class="restaurantList">
+            {% for obj in items%}
+
+            <li>
+              <a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a>
+              <br>
+              <a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a>
+
+
+              {% if obj.address%}
+              <span> - </span>
+                <a>{{obj.address}}</a>
+              {% endif %}
+
+
+              {% if obj.price %}
+              <span> - </span>
+                {% if obj.price == 1%}
+                <a >  tanio</a>
+                {% elif obj.price == 2 %}
+                  <a >przystępnie</a>
+                {% else %}
+                  <a >drogo</a>
+                {% endif %}
+              {% endif %}
+              <br>
+              {% if obj.opening_hours and obj.closing_hours %}
+              {% if obj.opening_hours <= now.time and obj.closing_hours >= now.time%}
+              <a>otwarte teraz</a>
+              {% else %}
+              <a>zamknięte teraz</a>
+              {%endif%}
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ol>
+
+            {% include 'pagination.html' %}
+
+
+      </div>
+
+      </div>
+
+  </div>
+
 
 {% endblock %}
