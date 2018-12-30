@@ -60,6 +60,31 @@ def list_restaurants(request):
     }
     return render(request, template, context)
 
+def edit_restaurant(request, pk):
+    template = 'new_restaurant.html'
+    restaurant = get_object_or_404(Restaurant, pk = pk)
+
+    if request.method == "POST":
+        form = RestaurantForm(request.POST, instance=restaurant)
+
+        try:
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'restaurant updated:)')
+        except Exception as e:
+            messages.warning(request,'Your update was not saved . error :()'.format(e))
+    else:
+        form = RestaurantForm(instance = restaurant)
+    context = {
+        'form': form,
+        'restaurnat': restaurant,
+    }
+    return render(request, template, context)
+
+
+
+
+
 def restaurant_detail(request, slug):
 
     """
