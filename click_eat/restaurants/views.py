@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 
-from .models import Restaurant, Category
+from .models import Restaurant, Category, FavouriteRestaurants
 from .forms import RestaurantForm,OpeningHoursForm
 
 # Create your views here.
@@ -78,9 +78,19 @@ def restaurant_detail(request, slug):
     template = 'detail.html'
 
     restaurant = get_object_or_404(Restaurant, slug=slug)
+
+
+
+    if(request.POST.get('add_fav')):
+        addFavRestaurant(request,restaurant) #int(request.GET.get('mytextbox')) )
+    if(request.POST.get('del_fav')):
+        delFavRestaurant(request,restaurant)
+    isFavourite = isFav(request,restaurant)
     context = {
         'restaurant':restaurant,
+        'isFav':isFavourite
     }
+
     return render(request,template,context)
 
 def category_detail(request, slug):
@@ -194,3 +204,34 @@ def Opening(request):
     }
 
     return render(request,template,context)
+
+def edit_restaurant(request, pk):
+    template = 'new_restaurant.html'
+    restaurant = get_object_or_404(Restaurant, pk = pk)
+
+    if request.method == "POST":
+        form = RestaurantForm(request.POST, instance=restaurant)
+
+        try:
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'restaurant updated:)')
+        except Exception as e:
+            messages.warning(request,'Your update was not saved . error :()'.format(e))
+    else:
+        form = RestaurantForm(instance = restaurant)
+    context = {
+        'form': form,
+        'restaurnat': restaurant,
+    }
+    return render(request, template, context)
+
+def addFavRestaurant(request,resturant):
+    FavouriteRestaurants.objects.get_or_create(user = request.user, restaurant = resturant)
+
+def delFavRestaurant(request,restaurant):
+    FavouriteRestaurants.objects.filter(user = request.user, restaurant = restaurant).delete()
+
+
+def isFav(request,restaurant):
+    return FavouriteRestaurants.objects.filter(user = request.user, restaurant = restaurant).exists()

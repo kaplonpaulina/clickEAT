@@ -32,7 +32,7 @@ Weekdays = [
 class Category(models.Model):
     """
 
-    Stores a unique category of :model:`restaurants.Restaurant`      
+    Stores a unique category of :model:`restaurants.Restaurant`
 
     """
 
@@ -56,9 +56,9 @@ class Restaurant(models.Model):
 
     name = models.CharField(max_length = 255)
     address = models.CharField(max_length = 255,blank=True, null=True,default=None )
-    created = models.DateTimeField(editable=False)
+    created = models.DateTimeField(editable=False,blank=True, null=True)
     updated = models.DateTimeField()
-    author = models.CharField(max_length = 255)
+    author = models.CharField(max_length = 255,blank=True, null=True)
     #weekday = models.IntegerField(_('Weekday'), choices=WEEKDAYS)
     price = models.IntegerField(choices=PriceChoice,null=True,blank=True)
     opening_hours = models.TimeField(blank=True, null=True)
@@ -66,7 +66,7 @@ class Restaurant(models.Model):
 
     #hours = models.ForeignKey(Hours, on_delete = models.CASCADE, blank=True, null=True)
     #author = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
-    category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False)
+    category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False,blank=True, null=True)
     #ags = ArrayField(models.ForeignKey(Category, on_delete = models.CASCADE), null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
 
@@ -80,6 +80,24 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return "@{}".format(self.name)
+class Comment(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)
+    author = models.CharField(max_length = 255, blank=True, null=True)
+    created = models.DateTimeField(editable=False, blank=True, null=True)
+    title = models.CharField(max_length=255, blank=True, null=True)
+    body = models.CharField(max_length=255, blank=True, null=True)
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created = timezone.now()
+        super(Comment, self).save(*args,**kwargs)
+
+class FavouriteRestaurants(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)
+    user = models.CharField(max_length=255)
+
+    def __str__(self):
+        return "@{}".format(self.user+" "+ self.restaurant.name)
+
 
 class Hours(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)
