@@ -26,7 +26,7 @@
       {% csrf_token %}
 
       {% bootstrap_form form %}
-      <button type="submit" name="button" class="btn btn-default">Save</button>
+
       {% with url_name=request.resolver_match.url_name %}
               {% if url_name == 'new_restaurant' %}
                 <button type="submit" name="button" class="btn btn-default">Save</button>
