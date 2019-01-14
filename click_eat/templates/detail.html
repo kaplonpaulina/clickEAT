@@ -56,4 +56,30 @@
     {% endif %}
 </div>
 
+
+<form method="post">
+  {% csrf_token %}
+ <input type="text" value="tytuł" name="title" size="30"/>
+ <input type="text" name="body" value="treść" size="255">
+ <input type="submit" class="btn" value="add comm" name="addComm">
+</form>
+
+comments:<br>
+
+
+{% for obj in items%}
+
+<li>
+  {{obj.author}}
+  <br>
+  {{obj.title}}
+  <br>
+  {{obj.body}}
+
+
+</li>
+{% endfor %}
+{% include 'pagination.html' %}
+
+
 {% endblock %}

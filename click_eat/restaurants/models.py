@@ -90,6 +90,8 @@ class Comment(models.Model):
         if not self.id:
             self.created = timezone.now()
         super(Comment, self).save(*args,**kwargs)
+    def __str__(self):
+        return "@{}".format(self.author +" "+ self.restaurant.name +" "+self.title)
 
 class FavouriteRestaurants(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)

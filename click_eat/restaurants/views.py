@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 
-from .models import Restaurant, Category, FavouriteRestaurants
+from .models import Restaurant, Category, FavouriteRestaurants, Comment
 from .forms import RestaurantForm,OpeningHoursForm
 
 # Create your views here.
@@ -80,15 +80,40 @@ def restaurant_detail(request, slug):
     restaurant = get_object_or_404(Restaurant, slug=slug)
 
 
+    if(request.POST.get('addComm')):
+        addComment(request, restaurant)
+
+    queryset = Comment.objects.filter(restaurant =restaurant)
+
+    paginator = Paginator(queryset, 5)
+    page = request.GET.get('page')
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+
+    index = items.number - 1
+    max_index = len(paginator.page_range)
+    start_index = index - 2 if index >= 2 else 0
+    end_index = index + 2 if index <= max_index else max_index
+    page_range = paginator.page_range[start_index:end_index]
+
+
 
     if(request.POST.get('add_fav')):
         addFavRestaurant(request,restaurant) #int(request.GET.get('mytextbox')) )
     if(request.POST.get('del_fav')):
         delFavRestaurant(request,restaurant)
     isFavourite = isFav(request,restaurant)
+
     context = {
         'restaurant':restaurant,
-        'isFav':isFavourite
+        'isFav':isFavourite,
+        "items":items,
+        "page_range":page_range,
+        "queryset":queryset
     }
 
     return render(request,template,context)
@@ -232,6 +257,10 @@ def addFavRestaurant(request,resturant):
 def delFavRestaurant(request,restaurant):
     FavouriteRestaurants.objects.filter(user = request.user, restaurant = restaurant).delete()
 
-
 def isFav(request,restaurant):
     return FavouriteRestaurants.objects.filter(user = request.user, restaurant = restaurant).exists()
+
+def addComment(request, restaurant):
+    title = request.POST.get('title').strip()
+    body = request.POST.get('body').strip()
+    Comment.objects.create(author = request.user, restaurant=restaurant,title=title,body=body)

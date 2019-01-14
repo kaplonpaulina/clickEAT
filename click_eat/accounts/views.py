@@ -24,16 +24,6 @@ class SignUp(CreateView):
     success_url = reverse_lazy("login")
     template_name = "accounts/signup.html"
 
-class Profile(TemplateView):
-    """
-        A hook to the profile page
-
-        **Template:**
-
-        :template:`profile.html`
-    """
-
-    template_name = 'profile.html'
 
 def listFavouriteRestaurants(request):
     template = 'profile.html'
@@ -57,6 +47,5 @@ def listFavouriteRestaurants(request):
     context = {
         "items":items,
         "page_range":page_range,
-        "n":request.user,
     }
     return render(request, template, context)
