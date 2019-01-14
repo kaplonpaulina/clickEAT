@@ -64,6 +64,8 @@ class Restaurant(models.Model):
     opening_hours = models.TimeField(blank=True, null=True)
     closing_hours = models.TimeField(blank=True, null=True)
 
+    rate = models.FloatField(blank=True,null=True)
+
     #hours = models.ForeignKey(Hours, on_delete = models.CASCADE, blank=True, null=True)
     #author = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
     category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False,blank=True, null=True)
@@ -74,6 +76,7 @@ class Restaurant(models.Model):
         self.slug = slugify(self.name)
         if not self.id:
             self.created = timezone.now()
+            self.rating = 0
         self.updated = timezone.now()
         super(Restaurant, self).save(*args,**kwargs)
 
@@ -99,6 +102,15 @@ class FavouriteRestaurants(models.Model):
 
     def __str__(self):
         return "@{}".format(self.user+" "+ self.restaurant.name)
+
+class Rating(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True)
+    user = models.CharField(max_length=255)
+    score = models.IntegerField(null=True)
+
+    def __str__(self):
+        return "@{}".format(self.user+" "+ self.restaurant.name + " " + str(self.score))
+
 
 
 class Hours(models.Model):

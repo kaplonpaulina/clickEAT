@@ -29,6 +29,17 @@
 
   {% endif %}
 
+  {% if restaurant.rate %}
+  <br>
+    <a>{{restaurant.rate}}</a>
+  {% else %}
+    no rate yet
+  {% endif %}
+
+  {% if  user.is_authenticated %}
+    user's rating: {{userRating}}
+  {% endif %}
+
   </li>
 
     </ol>
@@ -55,6 +66,12 @@
 
     {% endif %}
 </div>
+
+<form method="post">
+  {% csrf_token %}
+ <input type="text" value="1" name="rating" size="1"/>
+ <input type="submit" class="btn" value="add rating" name="addRating">
+</form>
 
 
 <form method="post">

@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
-from django.db.models import Q
+from django.db.models import Q,Sum
 from django.contrib import messages
 from django.utils import timezone
 
 
 
-from .models import Restaurant, Category, FavouriteRestaurants, Comment
+from .models import Restaurant, Category, FavouriteRestaurants, Comment,Rating
 from .forms import RestaurantForm,OpeningHoursForm
 
 # Create your views here.
@@ -82,6 +82,8 @@ def restaurant_detail(request, slug):
 
     if(request.POST.get('addComm')):
         addComment(request, restaurant)
+    if(request.POST.get('addRating')):
+        addRating(request,restaurant)
 
     queryset = Comment.objects.filter(restaurant =restaurant)
 
@@ -113,7 +115,10 @@ def restaurant_detail(request, slug):
         'isFav':isFavourite,
         "items":items,
         "page_range":page_range,
-        "queryset":queryset
+        "queryset":queryset,
+        "userRating":dispalyUserRating(request,restaurant)
+
+
     }
 
     return render(request,template,context)
@@ -251,8 +256,8 @@ def edit_restaurant(request, pk):
     }
     return render(request, template, context)
 
-def addFavRestaurant(request,resturant):
-    FavouriteRestaurants.objects.get_or_create(user = request.user, restaurant = resturant)
+def addFavRestaurant(request,restaurant):
+    FavouriteRestaurants.objects.get_or_create(user = request.user, restaurant = restaurant)
 
 def delFavRestaurant(request,restaurant):
     FavouriteRestaurants.objects.filter(user = request.user, restaurant = restaurant).delete()
@@ -264,3 +269,20 @@ def addComment(request, restaurant):
     title = request.POST.get('title').strip()
     body = request.POST.get('body').strip()
     Comment.objects.create(author = request.user, restaurant=restaurant,title=title,body=body)
+
+def addRating(request, restaurant):
+    rating, created = Rating.objects.update_or_create(user = request.user, restaurant = restaurant)
+    rating.score = int(request.POST.get('rating'))
+    rating.save()
+    ratings = Rating.objects.filter(restaurant = restaurant)
+    sum = ratings.aggregate(total=Sum('score'))['total']
+    count = ratings.count()
+    restaurant.rate = float(sum)/count
+    restaurant.save()
+
+def dispalyUserRating(request,restaurant):
+    try:
+        foo = int(Rating.objects.get(user = request.user, restaurant = restaurant).score)
+    except Rating.DoesNotExist:
+        foo = "no your rating yet, please rate"
+    return foo
