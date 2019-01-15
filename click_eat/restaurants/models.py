@@ -69,7 +69,7 @@ class Restaurant(models.Model):
 
     #hours = models.ForeignKey(Hours, on_delete = models.CASCADE, blank=True, null=True)
     #author = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
-    category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False,blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False)
     #ags = ArrayField(models.ForeignKey(Category, on_delete = models.CASCADE), null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
 
