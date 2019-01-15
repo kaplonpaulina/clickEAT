@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 
-from .models import Restaurant, Category, FavouriteRestaurants, Comment,Rating
+from .models import Restaurant, Category, FavouriteRestaurants, Comment,Rating,InfoRating
 from .forms import RestaurantForm,OpeningHoursForm
 
 # Create your views here.
@@ -82,8 +82,6 @@ def restaurant_detail(request, slug):
 
     if(request.POST.get('addComm')):
         addComment(request, restaurant)
-    if(request.POST.get('addRating')):
-        addRating(request,restaurant)
 
     queryset = Comment.objects.filter(restaurant =restaurant)
 
@@ -103,7 +101,12 @@ def restaurant_detail(request, slug):
     page_range = paginator.page_range[start_index:end_index]
 
 
-
+    if(request.POST.get('addRating')):
+        addRating(request,restaurant)
+    if(request.POST.get('positiveRating')):
+        addInfoRating(request,restaurant,1)
+    if(request.POST.get('negativeRating')):
+        addInfoRating(request,restaurant,-1)
     if(request.POST.get('add_fav')):
         addFavRestaurant(request,restaurant) #int(request.GET.get('mytextbox')) )
     if(request.POST.get('del_fav')):
@@ -116,7 +119,8 @@ def restaurant_detail(request, slug):
         "items":items,
         "page_range":page_range,
         "queryset":queryset,
-        "userRating":dispalyUserRating(request,restaurant)
+        "userRating":dispalyUserRating(request,restaurant),
+        "userInfoRating":dispalyUserInfoRating(request,restaurant)
 
 
     }
@@ -245,6 +249,9 @@ def edit_restaurant(request, pk):
         try:
             if form.is_valid():
                 form.save()
+                infoRatings = InfoRating.objects.filter(restaurant=restaurant).delete()
+                restaurant.infoRate = 0
+                restaurant.save()
                 messages.success(request, 'restaurant updated:)')
         except Exception as e:
             messages.warning(request,'Your update was not saved . error :()'.format(e))
@@ -254,24 +261,27 @@ def edit_restaurant(request, pk):
         'form': form,
         'restaurnat': restaurant,
     }
+
+
+
     return render(request, template, context)
 
 def addFavRestaurant(request,restaurant):
-    FavouriteRestaurants.objects.get_or_create(user = request.user, restaurant = restaurant)
+    FavouriteRestaurants.objects.get_or_create(user = request.user.username, restaurant = restaurant)
 
 def delFavRestaurant(request,restaurant):
-    FavouriteRestaurants.objects.filter(user = request.user, restaurant = restaurant).delete()
+    FavouriteRestaurants.objects.filter(user = request.user.username, restaurant = restaurant).delete()
 
 def isFav(request,restaurant):
-    return FavouriteRestaurants.objects.filter(user = request.user, restaurant = restaurant).exists()
+    return FavouriteRestaurants.objects.filter(user = request.user.username, restaurant = restaurant).exists()
 
 def addComment(request, restaurant):
     title = request.POST.get('title').strip()
     body = request.POST.get('body').strip()
-    Comment.objects.create(author = request.user, restaurant=restaurant,title=title,body=body)
+    Comment.objects.create(author = request.user.username, restaurant=restaurant,title=title,body=body)
 
 def addRating(request, restaurant):
-    rating, created = Rating.objects.update_or_create(user = request.user, restaurant = restaurant)
+    rating, created = Rating.objects.update_or_create(user = request.user.username, restaurant = restaurant)
     rating.score = int(request.POST.get('rating'))
     rating.save()
     ratings = Rating.objects.filter(restaurant = restaurant)
@@ -282,7 +292,23 @@ def addRating(request, restaurant):
 
 def dispalyUserRating(request,restaurant):
     try:
-        foo = int(Rating.objects.get(user = request.user, restaurant = restaurant).score)
+        foo = int(Rating.objects.get(user = request.user.username, restaurant = restaurant).score)
     except Rating.DoesNotExist:
+        foo = "no your rating yet, please rate"
+    return foo
+
+def addInfoRating(request, restaurant, score):
+    rating, created = InfoRating.objects.update_or_create(user = request.user.username, restaurant = restaurant)
+    rating.rate = score
+    rating.save()
+    ratings = InfoRating.objects.filter(restaurant = restaurant)
+    sum = ratings.aggregate(total=Sum('rate'))['total']
+    restaurant.infoRate = sum
+    restaurant.save()
+
+def dispalyUserInfoRating(request,restaurant):
+    try:
+        foo = InfoRating.objects.get(user = request.user.username, restaurant = restaurant).rate
+    except InfoRating.DoesNotExist:
         foo = "no your rating yet, please rate"
     return foo

@@ -36,8 +36,17 @@
     no rate yet
   {% endif %}
 
+  {% if restaurant.infoRate %}
+  <br>
+  info rate:
+    <a>{{restaurant.infoRate}}</a>
+  {% else %}
+    no rate yet
+  {% endif %}
+
   {% if  user.is_authenticated %}
     user's rating: {{userRating}}
+    user's info rating : {{userInfoRating}}
   {% endif %}
 
   </li>
@@ -64,22 +73,40 @@
 
         {% endif %}
 
-    {% endif %}
+
+
+
+
+
 </div>
 
+<br>
+restaurant rating:
 <form method="post">
   {% csrf_token %}
- <input type="text" value="1" name="rating" size="1"/>
+ <input type="text" value="5" name="rating" size="1"/>
  <input type="submit" class="btn" value="add rating" name="addRating">
 </form>
+<br>
+restaurant info accuracy rating:
+<form method="post">
+  {% csrf_token %}
+ <input type="submit" class="btn" value="+" name="positiveRating">
+</form>
+<form method="post">
+  {% csrf_token %}
+ <input type="submit" class="btn" value="-" name="negativeRating">
+</form>
 
-
+<br>
 <form method="post">
   {% csrf_token %}
  <input type="text" value="tytuł" name="title" size="30"/>
  <input type="text" name="body" value="treść" size="255">
  <input type="submit" class="btn" value="add comm" name="addComm">
 </form>
+
+{% endif %}
 
 comments:<br>
 

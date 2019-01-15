@@ -65,6 +65,7 @@ class Restaurant(models.Model):
     closing_hours = models.TimeField(blank=True, null=True)
 
     rate = models.FloatField(blank=True,null=True)
+    infoRate = models.IntegerField(default=0,blank=True,null=True)
 
     #hours = models.ForeignKey(Hours, on_delete = models.CASCADE, blank=True, null=True)
     #author = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
@@ -77,6 +78,7 @@ class Restaurant(models.Model):
         if not self.id:
             self.created = timezone.now()
             self.rating = 0
+            self.infoRate = 0
         self.updated = timezone.now()
         super(Restaurant, self).save(*args,**kwargs)
 
@@ -110,6 +112,19 @@ class Rating(models.Model):
 
     def __str__(self):
         return "@{}".format(self.user+" "+ self.restaurant.name + " " + str(self.score))
+
+class InfoRating(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True)
+    user = models.CharField(max_length=255)
+    rate = models.IntegerField(null=True)
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.rate = 0
+        super(InfoRating, self).save(*args,**kwargs)
+
+    def __str__(self):
+        return "@{}".format(self.user+" "+ self.restaurant.name + " " + str(self.rate))
+
 
 
 
