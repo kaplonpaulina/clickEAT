@@ -11,6 +11,38 @@ from .models import Restaurant, Category, FavouriteRestaurants, Comment,Rating,I
 from .forms import RestaurantForm,OpeningHoursForm,CategoryRestaurantForm
 
 # Create your views here.
+
+def list_categories(request):
+
+
+    template = 'categories.html'
+    queryset = Category.objects.all()
+
+    paginator = Paginator(queryset, 10)
+    page = request.GET.get('page')
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+
+    index = items.number - 1
+    max_index = len(paginator.page_range)
+    start_index = index - 2 if index >= 2 else 0
+    end_index = index + 2 if index <= max_index else max_index
+    page_range = paginator.page_range[start_index:end_index]
+
+    now = timezone.now()
+
+    context = {
+        "items":items,
+        "page_range":page_range,
+        "now":now,
+        "categories":RestauratsCategory.objects.all()
+    }
+    return render(request, template, context)
+
 def list_restaurants(request):
 
     """
