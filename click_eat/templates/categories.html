@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <h1 class="detailTitle">kategorie</h1>
+
+  <div class="row">
+    <div class="col">
+
+
+
+
+          <ol class="restaurantList">
+            {% for obj in items%}
+
+            <li>
+              <a href="{% url 'restaurants:category_detail' slug=obj.slug %}">{{obj.name}}</a>
+              <br>
+
+              {%for i in categories%}
+               {% if i.category.name == obj.name %}
+                <a href="{% url 'restaurants:detail' slug=i.category.slug %}">  {{i.restaurant.name }}  </a>
+               {% endif%}
+              {%endfor%}
+
+            </li>
+            {% endfor %}
+          </ol>
+
+            {% include 'pagination.html' %}
+
+
+      </div>
+
+      </div>
+
+  </div>
+
+
+{% endblock %}
