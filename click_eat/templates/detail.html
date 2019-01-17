@@ -5,7 +5,14 @@
 <div class="container">
     <h1 class="detailTitle">{{restaurant.name}}</h1>
     <ol class="restaurantList">
-      <li><a href="{% url 'restaurants:category_detail' slug=restaurant.category.slug %}">{{restaurant.category}}</a>
+
+<li>
+      {%for i in categories%}
+       {% if i.restaurant.name == restaurant.name %}
+        <a href="{% url 'restaurants:category_detail' slug=i.category.slug %}">  {{i.category.name }}  </a>
+
+       {% endif%}
+      {%endfor%}
       {% if restaurant.opening_hours and restaurant.closing_hours %}
 
     <a>{{restaurant.opening_hours}}</a>

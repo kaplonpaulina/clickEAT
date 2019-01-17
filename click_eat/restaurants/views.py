@@ -7,8 +7,8 @@ from django.utils import timezone
 
 
 
-from .models import Restaurant, Category, FavouriteRestaurants, Comment,Rating,InfoRating
-from .forms import RestaurantForm,OpeningHoursForm
+from .models import Restaurant, Category, FavouriteRestaurants, Comment,Rating,InfoRating,RestauratsCategory
+from .forms import RestaurantForm,OpeningHoursForm,CategoryRestaurantForm
 
 # Create your views here.
 def list_restaurants(request):
@@ -56,7 +56,8 @@ def list_restaurants(request):
     context = {
         "items":items,
         "page_range":page_range,
-        "now":now
+        "now":now,
+        "categories":RestauratsCategory.objects.all()
     }
     return render(request, template, context)
 
@@ -120,7 +121,8 @@ def restaurant_detail(request, slug):
         "page_range":page_range,
         "queryset":queryset,
         "userRating":dispalyUserRating(request,restaurant),
-        "userInfoRating":dispalyUserInfoRating(request,restaurant)
+        "userInfoRating":dispalyUserInfoRating(request,restaurant),
+        "categories":RestauratsCategory.objects.all()
 
 
     }
@@ -131,9 +133,10 @@ def category_detail(request, slug):
 
     template = 'category_detail.html'
     category = get_object_or_404(Category, slug=slug)
-    restaurant = Restaurant.objects.filter(category=category)
+    restaurant = RestauratsCategory.objects.filter(category=category)
     context = {
-        'resturant_by_category':restaurant,'category':category,
+        'resturant_by_category':restaurant,
+        'category':category,
     }
     return render(request,template,context)
 
@@ -162,7 +165,14 @@ def search(request):
     query = request.GET.get('q')
 
     if query:
-        queryset = Restaurant.objects.filter(Q(name__icontains=query))
+        queryset1 = Restaurant.objects.filter(Q(name__icontains=query))
+        queryset2_obj = RestauratsCategory.objects.filter(Q(category__name__icontains=query))
+        queryset2 = []
+        for restaurant in queryset2_obj:
+            queryset2.append(restaurant.restaurant)
+
+        queryset = list(set(list(queryset1)+queryset2))
+
     else:
         queryset = Restaurant.objects.all()
 
@@ -185,7 +195,8 @@ def search(request):
     context = {
         "items":items,
         "page_range":page_range,
-        "query":query
+        "query":query,
+        "categories":RestauratsCategory.objects.all()
     }
     return render(request, template, context)
 
@@ -204,18 +215,25 @@ def new_Restaurant(request):
 
     template = 'new_restaurant.html'
     form = RestaurantForm(request.POST or None)
+    categoriesChecked = []
+    categoriesNotChecked = getCategoryNames()
 
     try:
         if form.is_valid():
             form.save()
+
+            updateRestaurantCategories(Restaurant.objects.get(name = request.POST.get('name')),request.POST.getlist('categories'))
             messages.success(request, 'new restaurant was added')
 
     except Exception as e:
         form = RestaurantForm()
         messages.warning(request, 'restaurant was not added. Error {}'.format(e))
 
+
     context = {
-        'form':form
+        'form':form,
+        'checked':categoriesChecked,
+        'notChecked':categoriesNotChecked
     }
 
     return render(request,template,context)
@@ -223,7 +241,6 @@ def new_Restaurant(request):
 def Opening(request):
     template = 'new.html'
     form = OpeningHoursForm(request.POST or None)
-
     try:
         if form.is_valid():
             form.save()
@@ -242,9 +259,13 @@ def Opening(request):
 def edit_restaurant(request, pk):
     template = 'new_restaurant.html'
     restaurant = get_object_or_404(Restaurant, pk = pk)
+    categoriesChecked = getCategoriesInitials(restaurant)
+    categoriesNotChecked = getCategoriesNoINitials(restaurant,categoriesChecked)
 
     if request.method == "POST":
         form = RestaurantForm(request.POST, instance=restaurant)
+        #form2= RestauratsCategory(request.POST)
+
 
         try:
             if form.is_valid():
@@ -252,18 +273,21 @@ def edit_restaurant(request, pk):
                 infoRatings = InfoRating.objects.filter(restaurant=restaurant).delete()
                 restaurant.infoRate = 0
                 restaurant.save()
+                updateRestaurantCategories(restaurant,request.POST.getlist('categories'))
                 messages.success(request, 'restaurant updated:)')
         except Exception as e:
             messages.warning(request,'Your update was not saved . error :()'.format(e))
+            form = RestaurantForm(isinstance = restaurant)
     else:
         form = RestaurantForm(instance = restaurant)
+        #form2 = RestauratsCategory()
     context = {
         'form': form,
+        'checked':categoriesChecked,
+        'notChecked':categoriesNotChecked,
+        #'form2':form2,
         'restaurnat': restaurant,
     }
-
-
-
     return render(request, template, context)
 
 def addFavRestaurant(request,restaurant):
@@ -312,3 +336,51 @@ def dispalyUserInfoRating(request,restaurant):
     except InfoRating.DoesNotExist:
         foo = "no your rating yet, please rate"
     return foo
+
+def addCategories(categories,restaurant_str):
+    restaurant = Restaurant.objects.get(name=restaurant_str)
+    RestauratsCategory.objects.filter(restaurant=restaurant).delete()
+
+    for category_str in categories:
+        category = Category.objects.get(name = category_str)
+        new_category = RestauratsCategory.objects.create(restaurant = restaurant, category = category)
+        new_category.save()
+
+def getCategoriesInitials(restaurant):
+    queryset = RestauratsCategory.objects.filter(restaurant = restaurant)
+    categories = []
+    for category in queryset:
+        categories.append(category.category.name)
+    print(categories)
+    return categories
+
+def getCategoriesNoINitials(restaurant,checked):
+    queryset_name = getCategoryNames()
+
+    queryset = set(queryset_name) - set(checked)
+    categories = []
+    for category in queryset:
+        categories.append(category)
+    print(categories)
+    return categories
+
+def getCategoryNames():
+    queryset_obj = Category.objects.all()
+    queryset_name = []
+    for obj in queryset_obj:
+        queryset_name.append(obj.name)
+    return queryset_name
+
+def updateRestaurantCategories(resturant,categories):
+    RestauratsCategory.objects.filter(restaurant = resturant).delete()
+    for category_str in categories:
+    #    print(category_str)
+        category = Category.objects.get(name = category_str)
+        new_category = RestauratsCategory.objects.create(restaurant= resturant, category = category)
+        new_category.save()
+def getCategoryNamesFromRestaurntCategory():
+    queryset_obj = RestauratsCategory.objects.all()
+    queryset = []
+    for obj in queryset_obj:
+        queryset.append(obj.category)
+    return list(set(queryset))

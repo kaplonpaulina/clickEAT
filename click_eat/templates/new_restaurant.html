@@ -24,6 +24,15 @@
     <form  method="post">
 
       {% csrf_token %}
+        {%for category in checked %}
+        <input type="checkbox" id="{{category}}" name="categories" value="{{category}}" checked>
+        <label for="{{category}}">{{category}}</label>
+        {% endfor %}
+        {%for category in notChecked %}
+        <input type="checkbox" id="{{category}}" name="categories" value="{{category}}">
+        <label for="{{category}}">{{category}}</label>
+        {% endfor %}
+
 
       {% bootstrap_form form %}
 

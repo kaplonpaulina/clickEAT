@@ -54,7 +54,7 @@ class Restaurant(models.Model):
     """
 
 
-    name = models.CharField(max_length = 255)
+    name = models.CharField(max_length = 255,unique=True)
     address = models.CharField(max_length = 255,blank=True, null=True,default=None )
     created = models.DateTimeField(editable=False,blank=True, null=True)
     updated = models.DateTimeField()
@@ -69,7 +69,7 @@ class Restaurant(models.Model):
 
     #hours = models.ForeignKey(Hours, on_delete = models.CASCADE, blank=True, null=True)
     #author = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
-    category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False)
+    #category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False,blank=True,null=True)
     #ags = ArrayField(models.ForeignKey(Category, on_delete = models.CASCADE), null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
 
@@ -126,7 +126,11 @@ class InfoRating(models.Model):
         return "@{}".format(self.user+" "+ self.restaurant.name + " " + str(self.rate))
 
 
-
+class RestauratsCategory(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True)
+    category = models.ForeignKey(Category, on_delete = models.CASCADE, null=True)
+    def __str__(self):
+        return "@{}".format(self.restaurant.name+" "+ str(self.category))
 
 class Hours(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)

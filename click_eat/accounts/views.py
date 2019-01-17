@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 
 
 from . import forms
-from restaurants.models import Restaurant, Category, FavouriteRestaurants
+from restaurants.models import Restaurant, Category, FavouriteRestaurants, RestauratsCategory
 
 class SignUp(CreateView):
     """
@@ -47,5 +47,7 @@ def listFavouriteRestaurants(request):
     context = {
         "items":items,
         "page_range":page_range,
+        "categories":RestauratsCategory.objects.all()
+
     }
     return render(request, template, context)
