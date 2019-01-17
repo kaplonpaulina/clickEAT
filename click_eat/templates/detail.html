@@ -5,7 +5,14 @@
 <div class="container">
     <h1 class="detailTitle">{{restaurant.name}}</h1>
     <ol class="restaurantList">
-      <li><a href="{% url 'restaurants:category_detail' slug=restaurant.category.slug %}">{{restaurant.category}}</a>
+
+<li>
+      {%for i in categories%}
+       {% if i.restaurant.name == restaurant.name %}
+        <a href="{% url 'restaurants:category_detail' slug=i.category.slug %}">  {{i.category.name }}  </a>
+
+       {% endif%}
+      {%endfor%}
       {% if restaurant.opening_hours and restaurant.closing_hours %}
 
     <a>{{restaurant.opening_hours}}</a>
@@ -29,6 +36,26 @@
 
   {% endif %}
 
+  {% if restaurant.rate %}
+  <br>
+    <a>{{restaurant.rate}}</a>
+  {% else %}
+    no rate yet
+  {% endif %}
+
+  {% if restaurant.infoRate %}
+  <br>
+  info rate:
+    <a>{{restaurant.infoRate}}</a>
+  {% else %}
+    no rate yet
+  {% endif %}
+
+  {% if  user.is_authenticated %}
+    user's rating: {{userRating}}
+    user's info rating : {{userInfoRating}}
+  {% endif %}
+
   </li>
 
     </ol>
@@ -36,8 +63,74 @@
 
     {% if user.is_authenticated %}
 
-    <a class="nav-item nav-link active button-edit" href="#">edit</a>
-    {% endif %}
+    <a class="nav-item nav-link active button-edit" href="{% url 'restaurants:edit_restaurant' pk=restaurant.pk %}">edit</a>
+
+
+        {% if isFav == True %}
+          <form method="post">
+            {% csrf_token %}
+            <input type="submit" class="btn" value="del fav" name="del_fav">
+          </form>
+
+        {% else %}
+          <form method="post">
+            {% csrf_token %}
+            <input type="submit" class="btn" value="add fav" name="add_fav">
+          </form>
+
+        {% endif %}
+
+
+
+
+
+
 </div>
+
+<br>
+restaurant rating:
+<form method="post">
+  {% csrf_token %}
+ <input type="text" value="5" name="rating" size="1"/>
+ <input type="submit" class="btn" value="add rating" name="addRating">
+</form>
+<br>
+restaurant info accuracy rating:
+<form method="post">
+  {% csrf_token %}
+ <input type="submit" class="btn" value="+" name="positiveRating">
+</form>
+<form method="post">
+  {% csrf_token %}
+ <input type="submit" class="btn" value="-" name="negativeRating">
+</form>
+
+<br>
+<form method="post">
+  {% csrf_token %}
+ <input type="text" value="tytuł" name="title" size="30"/>
+ <input type="text" name="body" value="treść" size="255">
+ <input type="submit" class="btn" value="add comm" name="addComm">
+</form>
+
+{% endif %}
+
+comments:<br>
+
+
+{% for obj in items%}
+
+<li>
+  {{obj.author}}
+  <br>
+  {{obj.title}}
+  <br>
+  {{obj.body}}
+
+
+</li>
+{% endfor %}
+{% include 'pagination.html' %}
+
 
 {% endblock %}

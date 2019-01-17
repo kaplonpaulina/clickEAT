@@ -12,4 +12,24 @@
 
 
 
+
+{% for obj in items%}
+
+<li>
+  <a href="{% url 'restaurants:detail' slug=obj.restaurant.slug %}">{{obj.restaurant.name}}</a>
+  <br>
+  {%for i in categories%}
+  
+   {% if i.restaurant.name == obj.restaurant.name %}
+    <a href="{% url 'restaurants:category_detail' slug=i.category.slug %}">  {{i.category.name }}  </a>
+   {% endif%}
+  {%endfor%}
+
+
+</li>
+{% endfor %}
+
+
+{% include 'pagination.html' %}
+
 {% endblock %}

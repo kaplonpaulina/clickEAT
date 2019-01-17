@@ -7,7 +7,7 @@
 
     {% for item in resturant_by_category%}
     <ol class="restaurantList">
-      <li><a href="{% url 'restaurants:detail' slug=item.slug %}">{{item.name}}</a></li>
+      <li><a href="{% url 'restaurants:detail' slug=item.restaurant.slug %}">{{item.restaurant.name}}</a></li>
     </ol>
 
   {% endfor %}

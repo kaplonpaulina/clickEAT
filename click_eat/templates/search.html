@@ -24,8 +24,11 @@
             <li>
               <a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a>
               <br>
-              <a href="{% url 'restaurants:category_detail' slug=obj.category.slug %}">{{obj.category}}</a>
-
+              {%for i in categories%}
+               {% if i.restaurant.name == obj.name %}
+                <a href="{% url 'restaurants:category_detail' slug=i.category.slug %}">  {{i.category.name }}  </a>
+               {% endif%}
+              {%endfor%}
 
               {% if obj.address%}
               <span> - </span>

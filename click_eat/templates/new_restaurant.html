@@ -4,6 +4,13 @@
 {% block content%}
 
 <div class="container">
+  {% with url_name=request.resolver_match.url_name %}
+      {% if url_name == 'new_restaurant' %}
+        <h2>Add new resturant</h2>
+      {% elif url_name == 'edit_restaurant' %}
+        <h2>Update resturant {{restaurant}} </h2>
+      {% endif %}
+    {% endwith %}
     {% if messages %}
     {% for message in messages %}
     <div {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %} role="alert">
@@ -15,11 +22,27 @@
     {% endfor %}
     {% else %}
     <form  method="post">
-    
+
       {% csrf_token %}
-      
+        {%for category in checked %}
+        <input type="checkbox" id="{{category}}" name="categories" value="{{category}}" checked>
+        <label for="{{category}}">{{category}}</label>
+        {% endfor %}
+        {%for category in notChecked %}
+        <input type="checkbox" id="{{category}}" name="categories" value="{{category}}">
+        <label for="{{category}}">{{category}}</label>
+        {% endfor %}
+
+
       {% bootstrap_form form %}
-      <button type="submit" name="button" class="btn btn-default">Save</button>
+
+      {% with url_name=request.resolver_match.url_name %}
+              {% if url_name == 'new_restaurant' %}
+                <button type="submit" name="button" class="btn btn-default">Save</button>
+              {% elif url_name == 'edit_restaurant' %}
+                <button type="submit" name="button" class="btn btn-default">Update</button>
+              {% endif %}
+            {% endwith %}
     </form>
     {% endif %}
 </div>
