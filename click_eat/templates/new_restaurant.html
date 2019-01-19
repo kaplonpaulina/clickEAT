@@ -16,9 +16,9 @@
   {% if messages %}
   {% for message in messages %}
   <div {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %} role="alert">
-    <button type="button" class="" name="button" data-dismiss="alert" 
+    <button type="button" class="" name="button" data-dismiss="alert"
       {% if message.tags == "success" %}
-      onclick="location.href='{% url 'restaurants:list' %}'" 
+      onclick="location.href='{% url 'restaurants:list' %}'"
       {%else%}
       onclick="location.href='{% url ' restaurants:new_restaurant' %}'"
       {%endif%}>

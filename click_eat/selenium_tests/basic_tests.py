@@ -21,7 +21,7 @@ class BasicTestCase(TestCase):
         password = selenium.find_element_by_id('id_password')
         submit = selenium.find_element_by_xpath("//input[@value='Login']")
 
-        username.send_keys('testuser')
+        username.send_keys('kamila')
         password.send_keys('Lemur123')
 
         submit.click()
@@ -51,16 +51,7 @@ class BasicTestCase(TestCase):
 
         self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/accounts/signup/')
 
-    def test_go_to_log_out(self):
-        selenium = self.selenium
-        self.log_in()
 
-        selenium.get('http://127.0.0.1:8000/')
-
-        signup = selenium.find_element_by_link_text('Log out')
-        signup.click()
-
-        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/')
 
     def test_go_to_profile(self):
         selenium = self.selenium

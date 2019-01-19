@@ -39,7 +39,35 @@ class AccountTestCase(LiveServerTestCase):
         password = selenium.find_element_by_id('id_password')
         submit = selenium.find_element_by_xpath("//input[@value='Login']")
 
-        username.send_keys('testuser')
+        username.send_keys('kamila')
         password.send_keys('Lemur123')
 
         submit.click()
+
+    def test_log_out(self):
+        selenium = self.selenium
+        self.test_login()
+
+        selenium.get('http://127.0.0.1:8000/')
+
+        logout = selenium.find_element_by_link_text('Log out')
+        logout.click()
+
+        self.assertTrue(selenium.find_elements_by_link_text('Log in'))
+        self.assertEqual(selenium.current_url, 'http://127.0.0.1:8000/')
+
+    def test_profile_template(self):
+        response = self.client.get('/accounts/profile/')
+        self.assertTemplateUsed(response, 'profile.html')
+        self.assertTemplateUsed(response, 'base.html')
+        self.assertTemplateUsed(response, 'pagination.html')
+
+    def test_login_template(self):
+        response = self.client.get('/accounts/login/')
+        self.assertTemplateUsed(response, 'accounts/login.html')
+        self.assertTemplateUsed(response, 'base.html')
+
+    def test_signup_template(self):
+        response = self.client.get('/accounts/signup/')
+        self.assertTemplateUsed(response, 'accounts/signup.html')
+        self.assertTemplateUsed(response, 'base.html')
