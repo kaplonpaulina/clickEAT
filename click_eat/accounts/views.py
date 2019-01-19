@@ -26,6 +26,27 @@ class SignUp(CreateView):
 
 
 def listFavouriteRestaurants(request):
+
+    """
+
+        Makes a list of favourite restaurants.
+        From request extracts logged :model:`auth.User`,
+        then from :model:`restaurants.FavouriteRestaurants` 
+        extrsacts favourite rsetaurnat for a given user
+
+        **Context**
+
+        items - list of favourite restaurants on a given page_range
+
+        page_range - given page
+
+        categories - all :model:`restaurants.RestauratsCategory` objects
+
+        **Template**
+
+        :template:`accounts/profile.html`
+
+    """
     template = 'profile.html'
     queryset = FavouriteRestaurants.objects.filter(user =request.user)
 
