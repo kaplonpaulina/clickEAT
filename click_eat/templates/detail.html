@@ -56,17 +56,17 @@
 </div>
     {% if user.is_authenticated %}
   <div class="detail-button">
-    <a class="send" href="{% url 'restaurants:edit_restaurant' pk=restaurant.pk %}">edit</a>
+    <a class="send" href="{% url 'restaurants:edit_restaurant' pk=restaurant.pk %}">edit restaurant details</a>
         {% if isFav == True %}
           <form method="post">
             {% csrf_token %}
-            <input type="submit" class="send" value="del fav" name="del_fav">
+            <input type="submit" class="send" value="delete from favourites" name="del_fav">
           </form>
 
         {% else %}
           <form method="post">
             {% csrf_token %}
-            <input type="submit" class="send" value="add fav" name="add_fav">
+            <input type="submit" class="send" value="add to favourites" name="add_fav">
           </form>
 
         {% endif %}
@@ -108,7 +108,7 @@
     <input class="form-control" type="text" placeholder="tytuł" name="title"/><br />
     <input class="form-control" name="body" placeholder="treść"  />
  </div>
- <input type="submit" class="send" value="add comm" name="addComm">
+ <input type="submit" class="send" value="add comment" name="addComm">
 </form>
 
 {% endif %}
@@ -118,24 +118,30 @@
 <ul class="items-list">
   {% for obj in items%}
     <li>
-      <span class="items-author">{{obj.author}}</span>
-      <span class="items-title">{{obj.title}}</span>
-      <span class="items-body">{{obj.body}}</span>
-      {% if user.is_authenticated %}
-          {{user.username}}
-          {{obj.author}}
-          
-              {% if user.username == obj.author %}
-              <form method="post">
-                {% csrf_token %}
-               <input type="hidden" value={{obj.pk}} name="commId" />
-               <input type="submit" class="btn" value="X" name="delComm">
-              </form>
-          
-              {% endif %}
-          
-          
+      <div class="row">
+        <div class="col-11">
+            <span class="items-author">{{obj.author}}</span>
+            <span class="items-title">{{obj.title}}</span>
+            <span class="items-body">{{obj.body}}</span>
+        </div>
+         <div class="col-1">
+
+            {% if user.is_authenticated %}
+              
+            {% if user.username == obj.author %}
+            <form method="post">
+              {% csrf_token %}
+             <input type="hidden" value={{obj.pk}} name="commId" />
+             <input type="submit" class="btn" value="X" name="delComm">
+            </form>
+        
             {% endif %}
+        
+        
+          {% endif %}
+         </div>
+      </div>
+      
     </li>
   {% endfor %}
 </ul>

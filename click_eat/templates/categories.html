@@ -9,11 +9,9 @@
     <div class="col">
 
 
-
-
           <ol class="restaurantList">
             {% for obj in items%}
-
+            <div class="list-item">
             <li>
               <a href="{% url 'restaurants:category_detail' slug=obj.slug %}">{{obj.name}}</a>
               <br>
@@ -25,6 +23,7 @@
               {%endfor%}
 
             </li>
+          </div>
             {% endfor %}
           </ol>
 

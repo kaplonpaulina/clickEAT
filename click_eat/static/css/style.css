@@ -156,6 +156,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    box-shadow: none;
 }
 
 .restaurantList div{
@@ -183,7 +184,7 @@ body {
 }
 
 .restaurantList div a:hover {
-    text-decoration: none;
+    text-decoration: underline;
     color: white;
 }
 
@@ -211,8 +212,8 @@ body {
     margin: auto;
 }
 .button-edit:hover {
-    text-decoration: none;
-    color: white; 
+    text-decoration: none !important; 
+    color: white !important; 
 }
 
 .addRest {
@@ -353,6 +354,10 @@ body {
 
 .login-form .category-item {
     margin: 1px;
+}
+
+.comment {
+    padding: 1rem;
 }
 
 /* /* @media  */

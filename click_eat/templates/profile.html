@@ -14,11 +14,10 @@
 
 
 
-<div class="restaurantList items-list">
+<div class="restaurantList">
     {% for obj in items%}
   <div>
       <a href="{% url 'restaurants:detail' slug=obj.restaurant.slug %}">{{obj.restaurant.name}}</a>
-      <br>
       {%for i in categories%}
       
        {% if i.restaurant.name == obj.restaurant.name %}

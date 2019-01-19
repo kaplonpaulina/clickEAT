@@ -13,10 +13,20 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-lg col-md-12" onclick="location.href='/accounts/signup/';">
+      <div class="col-lg col-md-12"
+      {% if user.is_authenticated %}
+      onclick="location.href='/accounts/profile/';"
+      {% else %}
+       onclick="location.href='/accounts/signup/';"
+       {% endif %}
+      >
         <div class="middle-col"></div>
         <div class="container-text">
-          Sign up
+            {% if user.is_authenticated %}
+            Profile
+           {% else %}
+           Sing up
+           {% endif %}
         </div>
       </div>
       <div class="col-lg col-sm-12" onclick="location.href='/restaurants/';">
@@ -25,7 +35,7 @@
           Choose a restaurant
         </div>
       </div>
-      <div class="col-lg col-sm-12">
+      <div class="col-lg col-sm-12" onclick="location.href='/restaurants/categories/';">
         <div class="middle-col"></div>
         <div class="container-text">
           Enjoy your food
