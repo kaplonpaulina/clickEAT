@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Restaurant,Hours, RestauratsCategory, Category
+from .models import Restaurant, RestauratsCategory, Category
 
 class RestaurantForm(forms.ModelForm):
 
@@ -16,10 +16,6 @@ class RestaurantForm(forms.ModelForm):
         self.fields['price'].label = 'zakres cen'
         self.fields['address'].label = 'adres'
 
-class OpeningHoursForm(forms.ModelForm):
-    class Meta:
-        model = Hours
-        fields = ['restaurant','day','opening_time','closing_time']
 
 class CategoryRestaurantForm(forms.Form):
     categories = Category.objects.all()

@@ -4,29 +4,11 @@ from accounts.models import User
 from enum import Enum
 from django.utils import timezone
 
-# Create your models here.
-
-#class PriceChoice(Enum):   # A subclass of Enum
-#    T = "TANIO"
-#    U = "UMIARKOWANIE"
-#    D = "DROGO"
-
 PriceChoice = [
     (1, "tanio"),
     (2, "przystępnie"),
     (3, "drogo"),
 ]
-
-Weekdays = [
-    (1, "poniedziałek"),
-    (2, "wtorek"),
-    (3, "środa"),
-    (4, "czwartek"),
-    (5, "piątek"),
-    (6, "sobota"),
-    (7, "niedziela")
-]
-
 
 
 class Category(models.Model):
@@ -34,10 +16,11 @@ class Category(models.Model):
 
     Stores a unique category of :model:`restaurants.Restaurant`
 
+
     """
 
-    name = models.CharField(max_length = 255)
-    slug = models.SlugField(max_length=200, unique=True)
+    name = models.CharField(max_length = 255, unique = True,help_text="category's unique name")
+    slug = models.SlugField(max_length=200, unique=True,help_text="slugified name (so it can be used as web address)")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -51,27 +34,21 @@ class Restaurant(models.Model):
 
     Stores a unique named restaurant
 
+
     """
 
 
-    name = models.CharField(max_length = 255,unique=True)
-    address = models.CharField(max_length = 255,blank=True, null=True,default=None )
-    created = models.DateTimeField(editable=False,blank=True, null=True)
-    updated = models.DateTimeField()
-    author = models.CharField(max_length = 255,blank=True, null=True)
-    #weekday = models.IntegerField(_('Weekday'), choices=WEEKDAYS)
-    price = models.IntegerField(choices=PriceChoice,null=True,blank=True)
-    opening_hours = models.TimeField(blank=True, null=True)
-    closing_hours = models.TimeField(blank=True, null=True)
-
-    rate = models.FloatField(blank=True,null=True)
-    infoRate = models.IntegerField(default=0,blank=True,null=True)
-
-    #hours = models.ForeignKey(Hours, on_delete = models.CASCADE, blank=True, null=True)
-    #author = models.ForeignKey(User, on_delete=models.CASCADE,unique=False)
-    #category = models.ForeignKey(Category, on_delete =models.CASCADE,unique=False,blank=True,null=True)
-    #ags = ArrayField(models.ForeignKey(Category, on_delete = models.CASCADE), null=True, blank=True)
-    slug = models.SlugField(max_length=200, unique=True)
+    name = models.CharField(max_length = 255,unique=True,help_text="Unique restaurant name")
+    address = models.CharField(max_length = 255,blank=True, null=True,default=None,help_text="Restaurnat address" )
+    created = models.DateTimeField(editable=False,blank=True, null=True,help_text="Date when the instance was created")
+    updated = models.DateTimeField(help_text="Date when the instance was last updated")
+    author = models.CharField(max_length = 255,blank=True, null=True,help_text="Username of author")
+    price = models.IntegerField(choices=PriceChoice,null=True,blank=True,help_text="Range of the prices")
+    opening_hours = models.TimeField(blank=True, null=True,help_text="Opening hours")
+    closing_hours = models.TimeField(blank=True, null=True,help_text="Closing hours")
+    rate = models.FloatField(blank=True,null=True,help_text="Rating of the restaurnt")
+    infoRate = models.IntegerField(default=0,blank=True,null=True,help_text="Rating of the displayed information about the restaurnt since the last update")
+    slug = models.SlugField(max_length=200, unique=True,help_text="Slugified name (so it can be used as web address)")
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -85,12 +62,18 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return "@{}".format(self.name)
+
 class Comment(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)
-    author = models.CharField(max_length = 255, blank=True, null=True)
-    created = models.DateTimeField(editable=False, blank=True, null=True)
-    title = models.CharField(max_length=255, blank=True, null=True)
-    body = models.CharField(max_length=255, blank=True, null=True)
+    """
+
+    Stores a comment
+
+    """
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True,help_text="Instance of :model:`restaurants.Restaurant`")
+    author = models.CharField(max_length = 255, blank=True, null=True,help_text="Username of author")
+    created = models.DateTimeField(editable=False, blank=True, null=True,help_text="Date when the instance was created")
+    title = models.CharField(max_length=255, blank=True, null=True,help_text="Title of the comment")
+    body = models.CharField(max_length=255, blank=True, null=True,help_text="The messenge of the comment")
     def save(self, *args, **kwargs):
         if not self.id:
             self.created = timezone.now()
@@ -99,24 +82,41 @@ class Comment(models.Model):
         return "@{}".format(self.author +" "+ self.restaurant.name +" "+self.title)
 
 class FavouriteRestaurants(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)
-    user = models.CharField(max_length=255)
+    """
+
+    Connection between a restaurnat and an user , that indicates that the restaurant is user's favourite
+
+    """
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True,help_text="Instance of :model:`restaurants.Restaurant`")
+    user = models.CharField(max_length=255,help_text="Instance of :model:`auth.User`")
 
     def __str__(self):
         return "@{}".format(self.user+" "+ self.restaurant.name)
 
 class Rating(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True)
-    user = models.CharField(max_length=255)
-    score = models.IntegerField(null=True)
+    """
+
+    Connection between a restaurnat and an user, that indicates the user's rating for the restaurant
+
+
+    """
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True,help_text="Instance of :model:`restaurants.Restaurant`")
+    user = models.CharField(max_length=255,help_text="Instance of :model:`auth.User`")
+    score = models.IntegerField(null=True,help_text="Value of the user's rating")
 
     def __str__(self):
         return "@{}".format(self.user+" "+ self.restaurant.name + " " + str(self.score))
 
 class InfoRating(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True)
-    user = models.CharField(max_length=255)
-    rate = models.IntegerField(null=True)
+    """
+
+    Connection between a restaurnat and an user, that indicates the user's rating for the displayed infrmation about the restaurant since latest update
+
+
+    """
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True,help_text="Instance of :model:`restaurants.Restaurant`")
+    user = models.CharField(max_length=255,help_text="Instance of :model:`auth.User`")
+    rate = models.IntegerField(null=True,help_text="Value of the user's rating, (-1,1,0 = default)")
     def save(self, *args, **kwargs):
         if not self.id:
             self.rate = 0
@@ -127,13 +127,13 @@ class InfoRating(models.Model):
 
 
 class RestauratsCategory(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True)
-    category = models.ForeignKey(Category, on_delete = models.CASCADE, null=True)
+    """
+
+    Connection between a restaurnat and an category, that indicates that the restaurant has the category
+
+
+    """
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE, null=True,help_text="Instance of :model:`restaurants.Restaurant`")
+    category = models.ForeignKey(Category, on_delete = models.CASCADE, null=True,help_text="Instance of :model:`restaurants.Category`")
     def __str__(self):
         return "@{}".format(self.restaurant.name+" "+ str(self.category))
-
-class Hours(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True)
-    day = models.IntegerField(choices=Weekdays,default=1)
-    opening_time = models.TimeField(blank = True, null=True)
-    closing_time = models.TimeField(blank = True, null=True)
