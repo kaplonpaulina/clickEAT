@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+  <div class="title">
+    <h1>Restauracje w pobliżu</h1>
+  </div>
+  <div class="row">
+    <div class="col">
+
+      <nav class="navbar navbar-light bg-light">
+        <form class="form-inline" method="GET" action="{% url 'restaurants:search' %}">
+          <input class="form-control mr-sm-2" type="search" value="{{request.GET.get}}" placeholder="wyszukaj po nazwie"
+            aria-label="Search" name="q">
+          <button class="btn btn-default" type="submit">Search</button>
+        </form>
+      </nav>
+
+
+
+      <div class="restaurantList">
+        {% for obj in items%}
+        <div class="list">
+          <div class="item">
+            <a href="{% url 'restaurants:detail' slug=obj.slug %}">{{obj.name}}</a>
+          </div>
+          <div class="item">
+            {%for i in categories%}
+            {% if i.restaurant.name == obj.name %}
+            <a href="{% url 'restaurants:category_detail' slug=i.category.slug %}"> | {{i.category.name}} |</a>
+            {% endif%}
+            {%endfor%}
+          </div>
+          <div class="item">
+            {% if obj.address%}
+            <a>{{obj.address}}</a>
+            {% endif %}
+
+
+            {% if obj.price %}
+            <span> - </span>
+            {% if obj.price == 1%}
+            <a> tanio</a>
+            {% elif obj.price == 2 %}
+            <a>przystępnie</a>
+            {% else %}
+            <a>drogo</a>
+            {% endif %}
+            {% endif %}
+         </div>
+         <div class="item">
+            {% if obj.opening_hours and obj.closing_hours %}
+            {% if obj.opening_hours <= now.time and obj.closing_hours >= now.time%}
+            <a>otwarte teraz</a>
+            {% else %}
+            <a>zamknięte teraz</a>
+            {%endif%}
+            {% endif %}
+         </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% include 'pagination.html' %}
+
+
+    </div>
+
+  </div>
+
+</div>
+
+
+{% endblock %}

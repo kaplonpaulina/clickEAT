@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block content%}
+
+<div>
+  {% with url_name=request.resolver_match.url_name %}
+  {% if url_name == 'new_restaurant' %}
+  <div class="title">
+    <h1>Add new resturant</h1>
+  </div>
+  {% elif url_name == 'edit_restaurant' %}
+  <h2>Update resturant {{restaurant}} </h2>
+  {% endif %}
+  {% endwith %}
+  {% if messages %}
+  {% for message in messages %}
+  <div {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %} role="alert">
+    <button type="button" class="" name="button" data-dismiss="alert" 
+      {% if message.tags == "success" %}
+      onclick="location.href='{% url 'restaurants:list' %}'" 
+      {%else%}
+      onclick="location.href='{% url ' restaurants:new_restaurant' %}'"
+      {%endif%}>
+       close </button>
+    <strong>{{message}}</strong>
+  </div>
+{% endfor %}
+{% else %}
+<form method="post" class="login-form container">
+
+  {% csrf_token %}
+  <div class="row categories-list">
+    {%for category in checked %}
+    <div class="btn-group-toggle category-item" data-toggle="buttons">
+      <label for="{{category}}" class="btn btn-light">
+        <input type="checkbox" id="{{category}}" name="categories" value="{{category}}" checked>
+        {{category}}
+      </label>
+    </div>
+    {% endfor %}
+    {%for category in notChecked %}
+    <div class="btn-group-toggle category-item" data-toggle="buttons">
+      <label for="{{category}}" class="btn btn-light">
+        <input type="checkbox" id="{{category}}" name="categories" value="{{category}}">
+        {{category}}
+    </label>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% bootstrap_form form %}
+
+  {% with url_name=request.resolver_match.url_name %}
+  {% if url_name == 'new_restaurant' %}
+  <button type="submit" name="button" class="send">Save</button>
+  {% elif url_name == 'edit_restaurant' %}
+  <button type="submit" name="button" class="send">Update</button>
+  {% endif %}
+  {% endwith %}
+</form>
+{% endif %}
+</div>
+
+
+
+{% endblock %}

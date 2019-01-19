@@ -1,0 +1,6 @@
+  <!-- <div {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %} role="alert">
+    <!-- <button type="button" class="" name="button" data-dismiss="alert" onclick={% if message.tags=='success' %}
+      "location.href='{% url 'restaurants:list' %}'" {%else%}"location.href='{% url ' restaurants:new_restaurant' %}'"
+      {%endif%}> close </button> -->
+
+

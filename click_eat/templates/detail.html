@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content%}
+{% load bootstrap3 %}
+
+<div>
+    <h1 class="detailTitle">{{restaurant.name}}</h1>
+    <ol class="restaurantList">
+<div>
+<li>
+      {%for i in categories%}
+       {% if i.restaurant.name == restaurant.name %}
+        <a href="{% url 'restaurants:category_detail' slug=i.category.slug %}">  {{i.category.name }}  </a>
+
+       {% endif%}
+      {%endfor%}
+      {% if restaurant.opening_hours and restaurant.closing_hours %}
+
+    <a>{{restaurant.opening_hours}}</a>
+    <span> - </span>
+    <a>{{restaurant.closing_hours}}</a>
+    {% endif %}
+
+  {% if restaurant.address %}
+  <br>
+    <a>{{restaurant.address}}</a>
+  {% endif %}
+  {% if restaurant.price %}
+  <span> - </span>
+    {% if restaurant.price == 1%}
+      <a>tanio</a>
+    {% elif restaurant.price == 2 %}
+      <a>przystępnie</a>
+    {% else %}
+      <a>drogo</a>
+    {% endif %}
+
+  {% endif %}
+  <div class="rate">
+    {% if restaurant.rate %}
+      <p>Rate: <a>{{restaurant.rate}}</a></p>
+    {% else %}
+      <p>no rate yet</p>
+    {% endif %}
+    {% if restaurant.infoRate %}
+    <p>info rate: <a>{{restaurant.infoRate}}</a></p>
+    {% else %}
+      <p>no rate yet</p>
+    {% endif %}
+    {% if  user.is_authenticated %}
+      <p>user's rating: {{userRating}}</p>
+      <p>user's info rating : {{userInfoRating}}</p>
+    {% endif %}
+  </div>
+  </li>
+  </ol>
+</div>
+    {% if user.is_authenticated %}
+  <div class="detail-button">
+    <a class="send" href="{% url 'restaurants:edit_restaurant' pk=restaurant.pk %}">edit</a>
+        {% if isFav == True %}
+          <form method="post">
+            {% csrf_token %}
+            <input type="submit" class="send" value="del fav" name="del_fav">
+          </form>
+
+        {% else %}
+          <form method="post">
+            {% csrf_token %}
+            <input type="submit" class="send" value="add fav" name="add_fav">
+          </form>
+
+        {% endif %}
+  </div>
+
+</div>
+<br>
+<form method="post" class="login-form">
+  {% csrf_token %}
+  <div class="form-group">
+  <label>restaurant rating:</label>
+ <select class="custom-select" name="rating" style="width:60%">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+ </select>
+ </div>
+ <input type="submit" class="send" value="add rating" name="addRating">
+</form>
+<br>
+
+<div class="rating-forms">
+  <p>restaurant info accuracy rating:</p>
+    <form method="post">
+      {% csrf_token %}
+      <input type="submit" class="btn" value="+" name="positiveRating">
+    </form>
+      <form method="post">
+      {% csrf_token %}
+      <input type="submit" class="btn" value="-" name="negativeRating">
+    </form>
+  </div>
+<br>
+<form method="post" class="login-form from-group">
+  {% csrf_token %}
+  <div class="comment">
+    <input class="form-control" type="text" placeholder="tytuł" name="title"/><br />
+    <input class="form-control" name="body" placeholder="treść"  />
+ </div>
+ <input type="submit" class="send" value="add comm" name="addComm">
+</form>
+
+{% endif %}
+
+<div class="title"><h2>comments:</h2></div>
+
+<ul class="items-list">
+  {% for obj in items%}
+    <li>
+      <span class="items-author">{{obj.author}}</span>
+      <span class="items-title">{{obj.title}}</span>
+      <span class="items-body">{{obj.body}}</span>
+      {% if user.is_authenticated %}
+          {{user.username}}
+          {{obj.author}}
+          
+              {% if user.username == obj.author %}
+              <form method="post">
+                {% csrf_token %}
+               <input type="hidden" value={{obj.pk}} name="commId" />
+               <input type="submit" class="btn" value="X" name="delComm">
+              </form>
+          
+              {% endif %}
+          
+          
+            {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+{% include 'pagination.html' %}
+
+
+{% endblock %}
